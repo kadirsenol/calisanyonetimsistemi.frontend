@@ -1,4 +1,4 @@
-import { Box, useTheme,IconButton, Typography, Button } from '@mui/material';
+import { Box, useTheme,IconButton, Typography, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { tokens } from './theme';
 import DownloadIcon from '@mui/icons-material/Download';
 import StatBox from './StatBox';
@@ -9,6 +9,22 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import LineChart from './LineChart';
 import { useSelector } from 'react-redux';
+
+
+const monthNames = {
+  1: 'Ocak',
+  2: 'Şubat',
+  3: 'Mart',
+  4: 'Nisan',
+  5: 'Mayıs',
+  6: 'Haziran',
+  7: 'Temmuz',
+  8: 'Ağustos',
+  9: 'Eylül',
+  10: 'Ekim',
+  11: 'Kasım',
+  12: 'Aralık'
+};
 
 
 const Dashboard = () => {
@@ -74,146 +90,307 @@ const Dashboard = () => {
   const renderData = () => {
     if (!data) return null;
 
-    return Object.entries(data).map(([name, details]) => (
-      <div key={name} style={{ marginBottom: '20px' }}>
-        <h2>{name}</h2>
-        <div>
-          <h3>Analitiklik</h3>
-          <ul>
-            {Object.entries(details.analitiklik).map(([month, value]) => (
-             <li key={month}>{month}: {value === null ? null : value}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Takım Çalışması</h3>
-          <ul>
-            {Object.entries(details.takimCalismasi).map(([month, value]) => (
-             <li key={month}>{month}: {value === null ? null : value}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Üretkenlik</h3>
-          <ul>
-            {Object.entries(details.uretkenlik).map(([month, value]) => (
-             <li key={month}>{month}: {value}</li>
-            ))}
-          </ul>
+  return Object.entries(data).map(([name, details]) => (
+    <div key={name} className="mb-8">
+      <h2 className="text-lg font-semibold">{name}</h2>
+      <div className="mt-4">
+        <h3 className="text-base font-medium">Analitiklik</h3>
+        <div className="overflow-x-auto mx-auto px-4 max-w-full">
+          <table className="min-w-full border-collapse border border-gray-300 mt-2">
+            <thead>
+              <tr className="bg-gray-100 text-sm">
+                {Object.keys(details.analitiklik).map(month => (
+                  <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-sm">
+                {Object.values(details.analitiklik).map((value, index) => (
+                  <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-    ));
-  };
+      <div className="mt-4">
+        <h3 className="text-base font-medium">Takım Çalışması</h3>
+        <div className="overflow-x-auto mx-auto px-4 max-w-full">
+          <table className="min-w-full border-collapse border border-gray-300 mt-2">
+            <thead>
+              <tr className="bg-gray-100 text-sm">
+                {Object.keys(details.takimCalismasi).map(month => (
+                  <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-sm">
+                {Object.values(details.takimCalismasi).map((value, index) => (
+                  <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-base font-medium">Üretkenlik</h3>
+        <div className="overflow-x-auto mx-auto px-4 max-w-full">
+          <table className="min-w-full border-collapse border border-gray-300 mt-2">
+            <thead>
+              <tr className="bg-gray-100 text-sm">
+                {Object.keys(details.uretkenlik).map(month => (
+                  <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="text-sm">
+                {Object.values(details.uretkenlik).map((value, index) => (
+                  <td key={index} className="border border-gray-300 px-2 py-1">{value}</td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  
+  ));
+};
 
   //Departman trend render
   const renderDataDepartman = () => {
-    if (!dataForDepartman) return null;
+if (!dataForDepartman) return null;
 
-    return Object.entries(dataForDepartman).map(([name, details]) => (
-      <div key={name} style={{ marginBottom: '20px' }}>
-        <h2>{name}</h2>
-        <div>
-          <h3>Analitiklik</h3>
-          <ul>
-            {Object.entries(details.analitiklik).map(([month, value]) => (
-              <li key={month}>{month}: {value === null ? null : value}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Takım Çalışması</h3>
-          <ul>
-            {Object.entries(details.takimCalismasi).map(([month, value]) => (
-              <li key={month}>{month}: {value === null ? null : value}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3>Üretkenlik</h3>
-          <ul>
-            {Object.entries(details.uretkenlik).map(([month, value]) => (
-              <li key={month}>{month}: {value === null ? null : value}</li>
-            ))}
-          </ul>
-        </div>
+return Object.entries(dataForDepartman).map(([name, details]) => (
+  <div key={name} className="mb-8">
+    <h2 className="text-lg font-semibold">{name}</h2>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Analitiklik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.analitiklik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.analitiklik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Takım Çalışması</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.takimCalismasi).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.takimCalismasi).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Üretkenlik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.uretkenlik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.uretkenlik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
     ));
   };
 
 
 //Bireysel Anomali rende
 const renderAnomaliBireysel = () => {
-  if (!dataForAnomaliBireysel) return null;
+if (!dataForAnomaliBireysel) return null;
 
-  return Object.entries(dataForAnomaliBireysel).map(([name, details]) => (
-    <div key={name} style={{ marginBottom: '20px' }}>
-      <h2>{name}</h2>
-      <div>
-        <h3>Analitiklik</h3>
-        <ul>
-          {Object.entries(details.analitiklik).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3>Takım Çalışması</h3>
-        <ul>
-          {Object.entries(details.takimCalismasi).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3>Üretkenlik</h3>
-        <ul>
-          {Object.entries(details.uretkenlik).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
+return Object.entries(dataForAnomaliBireysel).map(([name, details]) => (
+  <div key={name} className="mb-8">
+    <h2 className="text-lg font-semibold">{name}</h2>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Analitiklik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.analitiklik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.analitiklik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Takım Çalışması</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.takimCalismasi).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.takimCalismasi).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Üretkenlik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.uretkenlik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.uretkenlik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   ));
 };
 
 //Departman anomali render
 const renderAnomaliDepartman = () => {
-  if (!dataForAnomaliDepartman) return null;
+if (!dataForAnomaliDepartman) return null;
 
-  return Object.entries(dataForAnomaliDepartman).map(([name, details]) => (
-    <div key={name} style={{ marginBottom: '20px' }}>
-      <h2>{name}</h2>
-      <div>
-        <h3>Analitiklik</h3>
-        <ul>
-          {Object.entries(details.analitiklik).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3>Takım Çalışması</h3>
-        <ul>
-          {Object.entries(details.takimCalismasi).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
-      </div>
-      <div>
-        <h3>Üretkenlik</h3>
-        <ul>
-          {Object.entries(details.uretkenlik).map(([month, value]) => (
-           value&& <li key={month}>{month}: {value === null ? null : value}</li>
-          ))}
-        </ul>
+return Object.entries(dataForAnomaliDepartman).map(([name, details]) => (
+  <div key={name} className="mb-8">
+    <h2 className="text-lg font-semibold">{name}</h2>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Analitiklik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.analitiklik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.analitiklik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Takım Çalışması</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.takimCalismasi).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.takimCalismasi).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value === null ? null : value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div className="mt-4">
+      <h3 className="text-base font-medium">Üretkenlik</h3>
+      <div className="overflow-x-auto mx-auto px-4 max-w-full">
+        <table className="min-w-full border-collapse border border-gray-300 mt-2">
+          <thead>
+            <tr className="bg-gray-100 text-sm">
+              {Object.keys(details.uretkenlik).map(month => (
+                <th key={month} className="border border-gray-300 px-2 py-1 text-left">{month}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="text-sm">
+              {Object.values(details.uretkenlik).map((value, index) => (
+                <td key={index} className="border border-gray-300 px-2 py-1">{value}</td>
+              ))}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
   ));
 };
 
   
-
-
 
   const getUser = async ()=>{
 
@@ -363,6 +540,7 @@ const renderAnomaliDepartman = () => {
     );
       if (response.status === 200 || response.status === 204 ) {
         setData(response.data);     
+        console.log(response.data);
       }else {
         toast.info(
           "Beklenmedik bir durum meydana geldi, bilgilerinizi kontrol ederek lutfen tekrar deneyin."
@@ -785,6 +963,8 @@ const renderAnomaliDepartman = () => {
     </Box>   
     </Box>    
 
+{ role === "yonetici" ? 
+
     <Box
           gridColumn="span 8"
           gridRow="span 2"
@@ -830,84 +1010,201 @@ const renderAnomaliDepartman = () => {
             <LineChart isDashboard={true} />
           </Box>
         </Box>
+: null}
+
     </Box>
 
 
+{role === "yonetici" ? <>
 
-    <div>
-      <label htmlFor="year-select"> Bireysel performans trendi için yıl seçin :</label>
-      <select id="year-select" value={selectedYearForBireysel} onChange={BireyselOrtPerTrendi}>
-        <option value="">Seçiniz</option>
-        {yearsforBireysel.map(year => (
-          <option key={year} value={year}>{year}</option>
-        ))}
-      </select>
-      <Button size='small' className='m-4' variant='contained' onClick={()=>setData("")}>Verileri temizle</Button>
-
+<div className="container mx-auto p-4">
+      <div className="flex items-center space-x-4">
+        <FormControl size='small' variant="outlined" className="w-full md:w-1/2">
+          <InputLabel id="year-select-label" className="text-gray-700">Bireysel performans trendi için yıl seçin</InputLabel>
+          <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={selectedYearForBireysel}
+            onChange={BireyselOrtPerTrendi}
+            label="Bireysel performans trendi için yıl seçin"
+          >
+            <MenuItem value="">
+              <em>Seçiniz</em>
+            </MenuItem>
+            {yearsforBireysel.map(year => (
+              <MenuItem key={year} value={year}>{year}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          size='small'
+          variant='contained'
+          color='inherit'
+          onClick={() => setData(null)}
+        >
+          Verileri temizle
+        </Button>
+      </div>
+      <br></br>
       {renderData()}
     </div>
+    
 
-
-    <div>
-      <label htmlFor="year-select"> Departmanlara göre performans trendi için yıl seçin :</label>
-      <select id="year-select" value={selectedYearForDepartman} onChange={DepartmanOrtPerTrendi}>
-        <option value="">Seçiniz</option>
-        {yearsforDepartman.map(year => (
-          <option key={year} value={year}>{year}</option>
-        ))}
-      </select>
-        <Button size='small' className='m-4' variant='contained' onClick={()=>setDataForDepartman("")}>Verileri temizle</Button>
-
+    <div className="container mx-auto p-4">
+      <div className="flex items-center space-x-4">
+        <FormControl size='small' variant="outlined" className="w-full md:w-1/2">
+          <InputLabel id="year-select-label" className="text-gray-700">Departmanlara göre performans trendi için yıl seçin</InputLabel>
+          <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={selectedYearForDepartman}
+            onChange={DepartmanOrtPerTrendi}
+            label="Bireysel performans trendi için yıl seçin"
+          >
+            <MenuItem value="">
+              <em>Seçiniz</em>
+            </MenuItem>
+            {yearsforDepartman.map(year => (
+              <MenuItem key={year} value={year}>{year}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          size='small'
+          variant='contained'
+          color='inherit'
+          onClick={() => setDataForDepartman(null)}
+        >
+          Verileri temizle
+        </Button>
+      </div>
+      <br></br>
       {renderDataDepartman()}
     </div>
 
-
-
-    <div>
-      <label htmlFor="year-select"> Bireysel performans anomali için yıl seçin :</label>
-      <select id="year-select" value={selectedYearForBireyselAnomali} onChange={BireyselPerformansAnomali}>
-        <option value="">Seçiniz</option>
-        {yearsforBireyselAnomali.map(year => (
-          <option key={year} value={year}>{year}</option>
-        ))}
-      </select>
-      <Button size='small' className='m-4' variant='contained' onClick={()=>setdataForAnomaliBireysel("")}>Verileri temizle</Button>
+    <div className="container mx-auto p-4">
+      <div className="flex items-center space-x-4">
+        <FormControl size='small' variant="outlined" className="w-full md:w-1/2">
+          <InputLabel id="year-select-label" className="text-gray-700">Bireysel performans anomali için yıl seçin</InputLabel>
+          <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={selectedYearForBireyselAnomali}
+            onChange={BireyselPerformansAnomali}
+            label="Bireysel performans trendi için yıl seçin"
+          >
+            <MenuItem value="">
+              <em>Seçiniz</em>
+            </MenuItem>
+            {yearsforBireyselAnomali.map(year => (
+              <MenuItem key={year} value={year}>{year}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          size='small'
+          variant='contained'
+          color='inherit'
+          onClick={() => setdataForAnomaliBireysel(null)}
+        >
+          Verileri temizle
+        </Button>
+      </div>
+      <br></br>
       {renderAnomaliBireysel()}
     </div>
 
 
-    <div>
-      <label htmlFor="year-select"> Departmanlara göre performans anomali için yıl seçin :</label>
-      <select id="year-select" value={selectedYearForDepartmanAnomali} onChange={DepartmanPerformansAnomali}>
-        <option value="">Seçiniz</option>
-        {yearsforDepartmanAnomali.map(year => (
-          <option key={year} value={year}>{year}</option>
-        ))}
-      </select>
-      <Button size='small' className='m-4' variant='contained' onClick={()=>setdataForAnomaliDepartman("")}>Verileri temizle</Button>
+    <div className="container mx-auto p-4">
+      <div className="flex items-center space-x-4">
+        <FormControl size='small' variant="outlined" className="w-full md:w-1/2">
+          <InputLabel id="year-select-label" className="text-gray-700">Departmanlara göre performans anomali için yıl seçin</InputLabel>
+          <Select
+            labelId="year-select-label"
+            id="year-select"
+            value={selectedYearForDepartmanAnomali}
+            onChange={DepartmanPerformansAnomali}
+            label="Bireysel performans trendi için yıl seçin"
+          >
+            <MenuItem value="">
+              <em>Seçiniz</em>
+            </MenuItem>
+            {yearsforDepartmanAnomali.map(year => (
+              <MenuItem key={year} value={year}>{year}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Button
+          size='small'
+          variant='contained'
+          color='inherit'
+          onClick={() => setdataForAnomaliDepartman(null)}
+        >
+          Verileri temizle
+        </Button>
+      </div>
+      <br></br>
       {renderAnomaliDepartman()}
     </div>
 
-<div>
-<Button size='small' variant='contained' onClick={IzinAnomali}>İzin anomoli bilgilerini getir</Button>
-<Button size='small' className='m-4' variant='contained' onClick={()=>setizinAnomaliData("")}>İzin anomoli bilgilerini temizle</Button>
-    {izinAnomaliData && (
-        <div>
-          {Object.entries(izinAnomaliData).map(([name, values]) => (
-            <div key={name} style={{ marginBottom: '20px' }}>
-              <h2>{name}</h2>
-              <ul>
-                {Object.entries(values).map(([key, value]) => (
-                  <li key={key}>{key}: {value}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+
+<div className="container mx-auto p-4">
+      <div className="flex items-center space-x-4">
+        <Button size='small' variant='contained' color='inherit' onClick={IzinAnomali}>
+          İzin anomali bilgilerini getir
+        </Button>
+        <Button size='small' variant='contained' color='inherit' onClick={() => setizinAnomaliData(null)}>
+          İzin anomali bilgilerini temizle
+        </Button>
+      </div>
+
+{izinAnomaliData && (
+        <div className="mt-4">
+          {Object.entries(izinAnomaliData).map(([name, values]) => {
+            const months = Object.keys(values).map(month => parseInt(month, 10));
+            return (
+              <div key={name} className="mb-8 p-4 bg-white shadow-md rounded-lg">
+                <h2 className="text-lg font-semibold">{name}</h2>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full border-collapse border border-gray-300 mt-2">
+                    <thead>
+                      <tr className="bg-gray-100 text-sm">
+                        {months.length > 0 && months.map(month => (
+                          <th key={month} className="border border-gray-300 px-2 py-1 text-left">
+                            {monthNames[month] || `Ay ${month}`}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="text-sm">
+                        {months.map(month => (
+                          <td key={month} className="border border-gray-300 px-2 py-1">
+                            {values[month]}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
-</div>
 
-    </>
+    </div>
+
+
+
+
+
+</>
+
+: null }
+
+</>
+    
 
   );
 };

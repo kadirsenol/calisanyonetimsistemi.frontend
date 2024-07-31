@@ -1,12 +1,9 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from '../components/profile/theme';
 import Sidebar from '../components/profile/Sidebar';
-
-import PreOrderDetails from '../components/profile/PreOrderDetails';
 import { useSelector } from 'react-redux';
 import Users from '../components/profile/Users';
 import PerformansDegerlendirme from '../components/profile/PerformansDegerlendirme';
-import ProfileImages from '../components/profile/ProfileImages';
 import Dashboard from '../components/profile/Dashboard';
 import Izins from '../components/profile/Izins';
 import Rapors from '../components/profile/Rapors';
